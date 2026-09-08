@@ -1,0 +1,565 @@
+/* ==========================================================================
+   REVERBERATION — DESIGN SYSTEM & TOKENS
+   - ONLY Sharp Corners (border-radius: 0px everywhere)
+   - Font: Rethink Sans (Light to Semibold 600 max)
+   - Captions: Geist Mono (100% ALL CAPS)
+   - Vibrant High-Chroma Aesthetics & Fast Fluid Animations
+   ========================================================================== */
+
+:root {
+  /* Color Palette - Vibrant Spectral Accents */
+  --bg-primary: #08090c;
+  --bg-surface: rgba(14, 17, 24, 0.85);
+  --bg-surface-elevated: rgba(22, 27, 38, 0.95);
+  --bg-surface-hover: rgba(32, 38, 52, 0.95);
+  
+  --border-subtle: rgba(255, 255, 255, 0.12);
+  --border-strong: rgba(255, 255, 255, 0.24);
+  --border-active: #00f0ff;
+  
+  --text-primary: #f0f4fc;
+  --text-secondary: #94a3b8;
+  --text-muted: #64748b;
+  
+  /* Vibrant Spectral Accents */
+  --neon-cyan: #00f0ff;
+  --neon-magenta: #ff007f;
+  --neon-amber: #ffb700;
+  --neon-green: #00ff88;
+  --neon-violet: #8a2be2;
+  --neon-flame: #ff4500;
+  
+  /* Active Theme Colors (dynamically updated by palette switcher) */
+  --accent-primary: var(--neon-cyan);
+  --accent-secondary: var(--neon-magenta);
+  --accent-glow: rgba(0, 240, 255, 0.35);
+  
+  /* Typography */
+  --font-body: 'Rethink Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-mono: 'Geist Mono', 'SF Mono', Consolas, Menlo, monospace;
+  
+  /* Easings from Animation Guidelines */
+  --ease-out-cubic: cubic-bezier(0.215, 0.61, 0.355, 1);
+  --ease-out-quart: cubic-bezier(0.165, 0.84, 0.44, 1);
+  --ease-in-out-cubic: cubic-bezier(0.645, 0.045, 0.355, 1);
+  --transition-fast: 0.2s var(--ease-out-cubic);
+}
+
+/* ==========================================================================
+   RESET & STRICT SHARP CORNER ENFORCEMENT
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  border-radius: 0 !important; /* STRICT: ONLY sharp corners */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-primary);
+  color: var(--text-primary);
+  font-family: var(--font-body);
+  font-weight: 300;
+  line-height: 1.5;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: none;
+}
+
+/* ==========================================================================
+   APP CONTAINER & CANVAS
+   ========================================================================== */
+
+.app-container {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, #10141e 0%, #06080c 100%);
+  display: flex;
+  overflow: hidden;
+}
+
+.sim-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  cursor: crosshair;
+  z-index: 1;
+}
+
+/* ==========================================================================
+   INTERACTION HINT BANNER
+   ========================================================================== */
+
+.interaction-hint {
+  position: absolute;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10;
+  pointer-events: none;
+  padding: 8px 18px;
+  background: rgba(8, 9, 12, 0.75);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: opacity var(--transition-fast), transform var(--transition-fast);
+}
+
+.interaction-hint.fade-out {
+  opacity: 0;
+  transform: translateX(-50%) translateY(8px);
+}
+
+/* ==========================================================================
+   TYPOGRAPHY RULES (Max Weight Semibold 600, Geist Mono UPPERCASE Captions)
+   ========================================================================== */
+
+.caption,
+.telemetry-label,
+.telemetry-val,
+.badge,
+.hotkey,
+.chip-label,
+.section-tag,
+.stat-subtext,
+.hud-title-tag {
+  font-family: var(--font-mono);
+  text-transform: uppercase;
+  letter-spacing: 0.09em;
+  font-weight: 400;
+  font-size: 0.7rem;
+}
+
+/* ==========================================================================
+   HUD FLOATING SURFACE (Emil Kowalski Design Eng)
+   ========================================================================== */
+
+.hud-root {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  z-index: 20;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  pointer-events: none; /* children enable pointer events */
+  max-width: 380px;
+  width: calc(100vw - 40px);
+}
+
+.hud-panel {
+  pointer-events: auto;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 12px 36px rgba(0, 0, 0, 0.6), 0 0 1px 1px rgba(255, 255, 255, 0.05);
+  transition: border-color 200ms ease, box-shadow var(--transition-fast);
+  transform-origin: top left;
+}
+
+.hud-panel:focus-within,
+.hud-panel:hover {
+  border-color: var(--border-strong);
+}
+
+/* Panel Header */
+.hud-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 16px;
+  border-bottom: 1px solid var(--border-subtle);
+  background: rgba(255, 255, 255, 0.02);
+}
+
+.hud-title-group {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-title {
+  font-family: var(--font-body);
+  font-weight: 600; /* max weight semibold */
+  font-size: 0.95rem;
+  letter-spacing: -0.01em;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.pulse-indicator {
+  width: 6px;
+  height: 6px;
+  background-color: var(--accent-primary);
+  box-shadow: 0 0 8px var(--accent-primary);
+  display: inline-block;
+  animation: pulse-glow 2s infinite ease-in-out;
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; transform: scale(0.9); }
+  50% { opacity: 1; transform: scale(1.15); }
+}
+
+.hud-title-tag {
+  color: var(--text-muted);
+  font-size: 0.65rem;
+  border: 1px solid var(--border-subtle);
+  padding: 2px 6px;
+}
+
+.hud-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* ==========================================================================
+   TACTILE BUTTONS & CHIPS (Sharp, Responsive, Micro-interactions)
+   ========================================================================== */
+
+.btn-icon {
+  background: transparent;
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  width: 28px;
+  height: 28px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  transition: color 200ms ease, background-color 200ms ease, border-color 200ms ease, transform 0.15s var(--ease-out-cubic);
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .btn-icon:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-strong);
+  }
+}
+
+.btn-icon:active {
+  transform: scale(0.94);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.btn-icon.active {
+  color: #000;
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 10px var(--accent-glow);
+}
+
+/* Collapsible Content */
+.hud-body {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  max-height: 80vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transition: max-height var(--transition-fast), opacity var(--transition-fast), padding var(--transition-fast);
+}
+
+.hud-body.collapsed {
+  max-height: 0;
+  opacity: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  pointer-events: none;
+  border-bottom: none;
+}
+
+/* Custom Scrollbar */
+.hud-body::-webkit-scrollbar {
+  width: 4px;
+}
+.hud-body::-webkit-scrollbar-thumb {
+  background: var(--border-strong);
+}
+
+/* ==========================================================================
+   SECTION & PARAMETER CONTROLS
+   ========================================================================== */
+
+.hud-section {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.section-tag {
+  color: var(--accent-primary);
+  font-size: 0.68rem;
+  font-weight: 500;
+}
+
+.section-caption {
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 300;
+}
+
+/* Sliders */
+.slider-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 6px 0;
+}
+
+.slider-label-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+}
+
+.slider-name {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 400;
+  color: var(--text-secondary);
+}
+
+.slider-val {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: var(--accent-primary);
+  font-weight: 500;
+}
+
+.sharp-slider {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 100%;
+  height: 4px;
+  background: rgba(255, 255, 255, 0.1);
+  outline: none;
+  cursor: pointer;
+  transition: background 200ms ease;
+}
+
+.sharp-slider:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.sharp-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 12px;
+  height: 12px;
+  background: var(--text-primary);
+  border: 1px solid var(--accent-primary);
+  box-shadow: 0 0 6px var(--accent-glow);
+  cursor: ew-resize;
+  transition: transform 0.15s var(--ease-out-cubic), background-color 200ms ease;
+}
+
+.sharp-slider::-webkit-slider-thumb:hover {
+  background: var(--accent-primary);
+  transform: scale(1.2);
+}
+
+.sharp-slider::-moz-range-thumb {
+  width: 12px;
+  height: 12px;
+  background: var(--text-primary);
+  border: 1px solid var(--accent-primary);
+  box-shadow: 0 0 6px var(--accent-glow);
+  cursor: ew-resize;
+}
+
+/* ==========================================================================
+   SEGMENTED CONTROLS & CHIPS
+   ========================================================================== */
+
+.chip-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+}
+
+.chip-grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.chip-btn {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-secondary);
+  padding: 6px 8px;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  cursor: pointer;
+  text-align: center;
+  transition: all 200ms ease;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .chip-btn:hover {
+    color: var(--text-primary);
+    background: rgba(255, 255, 255, 0.08);
+    border-color: var(--border-strong);
+  }
+}
+
+.chip-btn.active {
+  color: #000;
+  background: var(--accent-primary);
+  border-color: var(--accent-primary);
+  font-weight: 600;
+  box-shadow: 0 0 8px var(--accent-glow);
+}
+
+/* Palette Color Previews */
+.palette-preview {
+  display: flex;
+  height: 4px;
+  margin-top: 4px;
+  width: 100%;
+}
+
+.palette-swatch {
+  flex: 1;
+  height: 100%;
+}
+
+/* ==========================================================================
+   TELEMETRY & STATUS GRID
+   ========================================================================== */
+
+.telemetry-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 10px 12px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid var(--border-subtle);
+}
+
+.telemetry-item {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.telemetry-label {
+  color: var(--text-muted);
+  font-size: 0.62rem;
+}
+
+.telemetry-val {
+  color: var(--text-primary);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   QUICK ACTION BUTTONS
+   ========================================================================== */
+
+.action-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.action-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid var(--border-subtle);
+  color: var(--text-primary);
+  padding: 8px 12px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: all 200ms ease;
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .action-btn:hover {
+    background: rgba(255, 255, 255, 0.1);
+    border-color: var(--border-strong);
+  }
+}
+
+.action-btn:active {
+  transform: scale(0.97);
+}
+
+.action-btn.primary {
+  background: var(--accent-primary);
+  color: #05070a;
+  border-color: var(--accent-primary);
+  font-weight: 500;
+}
+
+.action-btn.primary:hover {
+  box-shadow: 0 0 12px var(--accent-glow);
+}
+
+.hotkey {
+  font-size: 0.6rem;
+  opacity: 0.7;
+  padding: 1px 4px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* ==========================================================================
+   FLOATING CORNER TOOLS
+   ========================================================================== */
+
+.top-right-tools {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 20;
+  display: flex;
+  gap: 8px;
+}
+
+/* ==========================================================================
+   ACCESSIBILITY & PREFERS-REDUCED-MOTION
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Reverberation — 2D Sand-on-Speaker Acoustic Field</title>
+    <meta name="description" content="An interactive 2D sand-on-speaker surface where wave impulses reflect, compound, and settle into living Chladni cymatic patterns." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@300;400;500;600&family=Rethink+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300;1,400;1,500;1,600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/src/style.css" />
+  </head>
+  <body>
+    <div id="app" class="app-container">
+      <!-- Main simulation canvas -->
+      <canvas id="sim-canvas" class="sim-canvas" aria-label="Interactive reverberating sand plate simulation surface"></canvas>
+
+      <!-- Subtitle hint for new visitors -->
+      <div id="interaction-hint" class="interaction-hint">
+        <span class="caption">TAP TO STRIKE &bull; DRAG TO BOW &bull; SPACE FOR IMPULSE</span>
+      </div>
+
+      <!-- Tactile HUD Container -->
+      <header id="hud-root" class="hud-root" role="region" aria-label="Reverberation Controls and Telemetry"></header>
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
